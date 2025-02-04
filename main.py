@@ -57,6 +57,9 @@ def main(config):
         grid = generate_samples(ddpm, device, f"samples/{i:02d}.png")
         writer.add_image(image_name='output_batch', image=grid)
 
+    weights_filename = "ddpm_weights.pth"
+    torch.save(ddpm.state_dict(), weights_filename)
+    print(f"Model weights saved successfully to {weights_filename}")
 
 if __name__ == "__main__":
     device = "cuda" if torch.cuda.is_available() else "cpu"
