@@ -1,0 +1,12 @@
+defaults:
+  - writer: wandb
+  - dataloader: dataloader
+  - model: ddpm
+  - model@unet: unet
+  - optimizer: adam  # you can choose "sgd" or add your custom one 
+  - _self_
+trainer:
+  device: "cpu"
+  n_epochs: 100
+augmentation:
+  random_flip: false

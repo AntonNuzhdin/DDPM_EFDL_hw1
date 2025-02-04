@@ -1,0 +1,5 @@
+_target_: logger.WandbWriter
+project_name: "EFDL_ddpm"
+run_name: "ddpm_debug_run"
+mode: "online"
+
