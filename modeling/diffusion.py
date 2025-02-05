@@ -31,12 +31,11 @@ class DiffusionModel(nn.Module):
 
         return self.criterion(eps, self.eps_model(x_t, timestep / self.num_timesteps))
 
-    # device
     def sample(self, num_samples: int, size, device) -> torch.Tensor:
-        x_i = torch.randn(num_samples, *size, device=device)
+        x_i = torch.randn(num_samples, *size, device=device) # device
     
         for i in range(self.num_timesteps, 0, -1):
-            z = torch.randn(num_samples, *size, device=device) if i > 1 else 0  # Убедитесь, что z на правильном устройстве
+            z = torch.randn(num_samples, *size, device=device) if i > 1 else 0  # device
             eps = self.eps_model(x_i, torch.tensor(i / self.num_timesteps).repeat(num_samples, 1).to(device))
             
             x_i = self.inv_sqrt_alphas[i].to(device) * (x_i - eps * self.one_minus_alpha_over_prod[i].to(device)) + self.sqrt_betas[i].to(device) * z

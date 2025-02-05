@@ -1,7 +1,9 @@
+import torch
 import wandb
 import numpy as np
 import pandas as pd
 from datetime import datetime
+from PIL import Image
 
 
 class WandbWriter:
@@ -110,102 +112,19 @@ class WandbWriter:
             step=self.step,
         )
 
-    def add_scalars(self, scalars):
-        """
-        Log several scalars to the experiment tracker.
-
-        Args:
-            scalars (dict): dict, containing scalar name and value.
-        """
-        self.wandb.log(
-            {
-                self._object_name(scalar_name): scalar
-                for scalar_name, scalar in scalars.items()
-            },
-            step=self.step,
-        )
 
     def add_image(self, image_name, image):
-        """
-        Log an image to the experiment tracker.
-
-        Args:
-            image_name (str): name of the image to use in the tracker.
-            image (Path | ndarray | Image): image in the WandB-friendly
-                format.
-        """
+        if isinstance(image, torch.Tensor):
+            image = image.detach().cpu()
+            if image.ndim == 3 and image.shape[0] in [1, 3]:
+                image = image.permute(1, 2, 0)
+            image = image.numpy()
+            if np.issubdtype(image.dtype, np.floating):
+                if image.min() < 0:
+                    image = (image + 1.0) / 2.0 
+                image = (image * 255).astype(np.uint8)
         self.wandb.log(
-            {self._object_name(image_name): self.wandb.Image(image)}, step=self.step
+            {self._object_name(image_name): self.wandb.Image(image)},
+            step=self.step
         )
-
-    def add_audio(self, audio_name, audio, sample_rate=None):
-        """
-        Log an audio to the experiment tracker.
-
-        Args:
-            audio_name (str): name of the audio to use in the tracker.
-            audio (Path | ndarray): audio in the WandB-friendly format.
-            sample_rate (int): audio sample rate.
-        """
-        audio = audio.detach().cpu().numpy().T
-        self.wandb.log(
-            {
-                self._object_name(audio_name): self.wandb.Audio(
-                    audio, sample_rate=sample_rate
-                )
-            },
-            step=self.step,
-        )
-
-    def add_text(self, text_name, text):
-        """
-        Log text to the experiment tracker.
-
-        Args:
-            text_name (str): name of the text to use in the tracker.
-            text (str): text content.
-        """
-        self.wandb.log(
-            {self._object_name(text_name): self.wandb.Html(text)}, step=self.step
-        )
-
-    def add_histogram(self, hist_name, values_for_hist, bins=None):
-        """
-        Log histogram to the experiment tracker.
-
-        Args:
-            hist_name (str): name of the histogram to use in the tracker.
-            values_for_hist (Tensor): array of values to calculate
-                histogram of.
-            bins (int | str): the definition of bins for the histogram.
-        """
-        values_for_hist = values_for_hist.detach().cpu().numpy()
-        np_hist = np.histogram(values_for_hist, bins=bins)
-        if np_hist[0].shape[0] > 512:
-            np_hist = np.histogram(values_for_hist, bins=512)
-
-        hist = self.wandb.Histogram(np_histogram=np_hist)
-
-        self.wandb.log({self._object_name(hist_name): hist}, step=self.step)
-
-    def add_table(self, table_name, table: pd.DataFrame):
-        """
-        Log table to the experiment tracker.
-
-        Args:
-            table_name (str): name of the table to use in the tracker.
-            table (DataFrame): table content.
-        """
-        self.wandb.log(
-            {self._object_name(table_name): self.wandb.Table(dataframe=table)},
-            step=self.step,
-        )
-
-    def add_images(self, image_names, images):
-        raise NotImplementedError()
-
-    def add_pr_curve(self, curve_name, curve):
-        raise NotImplementedError()
-
-    def add_embedding(self, embedding_name, embedding):
-        raise NotImplementedError()
+ 
