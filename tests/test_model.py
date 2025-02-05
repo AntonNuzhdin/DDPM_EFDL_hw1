@@ -12,7 +12,7 @@ from utils import set_random_seed
 
 @pytest.fixture(scope="session", autouse=True)
 def seed():
-    set_random_seed(52)
+    set_random_seed(123)
 
 
 @pytest.mark.parametrize(

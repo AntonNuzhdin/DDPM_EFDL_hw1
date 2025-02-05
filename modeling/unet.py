@@ -106,7 +106,7 @@ class UnetModel(nn.Module):
         down3 = self.down3(down2)
 
         thro = self.to_vec(down3)
-        temb = self.timestep_embedding(t)[..., None, None] # TODO: TimestepEmbedding делает view(-1, 1). Соотв, сложение не будет работать. Нужно добавить размерности для правильного бродкастинга
+        temb = self.timestep_embedding(t).unsqueeze(-1).unsqueeze(-1) # TODO: broadcasting
 
         thro = self.up0(thro + temb)
 

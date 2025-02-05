@@ -21,30 +21,31 @@ class DiffusionModel(nn.Module):
         self.criterion = nn.MSELoss()
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        timestep = torch.randint(1, self.num_timesteps + 1, (x.shape[0],))
-        eps = torch.randn_like(x) # TODO: эпсилон должен быть шумом N(0, I). Используя rand_like мы генерируем равномерное распределение, а не нормальное 
+        timestep = torch.randint(1, self.num_timesteps + 1, (x.shape[0],), device=x.device) # device
+        eps = torch.randn_like(x, device=x.device) # randn + device
 
         x_t = (
             self.sqrt_alphas_cumprod[timestep, None, None, None] * x
-            + self.sqrt_one_minus_alpha_prod[timestep, None, None, None] * eps # TODO: формула не соответствует VP-SDE процессу диффузии
+            + self.sqrt_one_minus_alpha_prod[timestep, None, None, None] * eps # sqrt_one_minus_alpha_prod
         )
 
         return self.criterion(eps, self.eps_model(x_t, timestep / self.num_timesteps))
 
+    # device
     def sample(self, num_samples: int, size, device) -> torch.Tensor:
-
-        x_i = torch.randn(num_samples, *size, device=device) # TODO: не было указано какой девайс 
-
+        x_i = torch.randn(num_samples, *size, device=device)
+    
         for i in range(self.num_timesteps, 0, -1):
-            z = torch.randn(num_samples, *size) if i > 1 else 0
+            z = torch.randn(num_samples, *size, device=device) if i > 1 else 0  # Убедитесь, что z на правильном устройстве
             eps = self.eps_model(x_i, torch.tensor(i / self.num_timesteps).repeat(num_samples, 1).to(device))
-            x_i = self.inv_sqrt_alphas[i] * (x_i - eps * self.one_minus_alpha_over_prod[i]) + self.sqrt_betas[i] * z
-
+            
+            x_i = self.inv_sqrt_alphas[i].to(device) * (x_i - eps * self.one_minus_alpha_over_prod[i].to(device)) + self.sqrt_betas[i].to(device) * z
+    
         return x_i
 
 
 def get_schedules(beta1: float, beta2: float, num_timesteps: int) -> Dict[str, torch.Tensor]:
-    assert 0 < beta1 < beta2 < 1.0, "beta1 and beta2 must be in (0, 1)" # TODO: тут нужно добавить проверку что обе бетты больше нуля
+    assert 0 < beta1 < beta2 < 1.0, "beta1 and beta2 must be in (0, 1)" # betas should be positive
 
     betas = (beta2 - beta1) * torch.arange(0, num_timesteps + 1, dtype=torch.float32) / num_timesteps + beta1
     sqrt_betas = torch.sqrt(betas)

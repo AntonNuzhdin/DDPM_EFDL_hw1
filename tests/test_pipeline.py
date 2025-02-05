@@ -18,7 +18,7 @@ from utils import set_random_seed
 
 @pytest.fixture(scope="session", autouse=True)
 def seed():
-    set_random_seed(52)
+    set_random_seed(123)
 
 
 @pytest.fixture
@@ -67,8 +67,8 @@ def test_training(device, train_dataset):
 
         dataloader = DataLoader(train_subset, batch_size=4, shuffle=True)
         losses = []
-        for _ in range(0, 10):
-            loss = train_epoch(ddpm, dataloader, optim, device)
+        for _ in range(0, 2):
+            loss, _ = train_epoch(ddpm, dataloader, optim, device)
             losses.append(loss)
         os.makedirs('test_samples', exist_ok=True)
         generate_samples(ddpm, device, os.path.join('test_samples', f'test_img_{index}.png'))

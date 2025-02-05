@@ -6,7 +6,7 @@ defaults:
   - optimizer: adam  # you can choose "sgd" or add your custom one 
   - _self_
 trainer:
-  device: "cpu"
+  device: "cuda"
   n_epochs: 100
 augmentation:
-  random_flip: false
+  random_flip: true

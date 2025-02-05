@@ -1,6 +1,8 @@
 import torch
 import hydra 
 import wandb
+import random
+import os
 from omegaconf import OmegaConf
 from torch.utils.data import DataLoader
 from torchvision import transforms
@@ -22,6 +24,7 @@ def main(config):
     project_config = OmegaConf.to_container(config)
     writer = instantiate(config.writer, project_config)
 
+    os.makedirs('samples', exist_ok=True)
     # log the full config like an artifact
     config_filename = "config.yaml"
     OmegaConf.save(config, config_filename)
@@ -38,7 +41,7 @@ def main(config):
         transform_list.append(transforms.RandomHorizontalFlip())
     transform_list.extend([
         transforms.ToTensor(),
-        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+    transforms.Normalize((0.5, 0.5 ,0.5), (0.5, 0.5, 0.5))
     ])
     train_transforms = transforms.Compose(transform_list)
 
@@ -53,7 +56,10 @@ def main(config):
     optim = instantiate(config.optimizer, params=ddpm.parameters())
 
     for i in range(config.trainer.get("n_epochs")):
-        train_epoch(ddpm, dataloader, optim, device, writer)
+        loss_ema, lr = train_epoch(ddpm, dataloader, optim, device)
+        writer.add_scalar(scalar_name='train_loss', scalar=loss_ema)
+        writer.add_scalar(scalar_name='lr', scalar=lr)
+        
         grid = generate_samples(ddpm, device, f"samples/{i:02d}.png")
         writer.add_image(image_name='output_batch', image=grid)
 
@@ -62,5 +68,5 @@ def main(config):
     print(f"Model weights saved successfully to {weights_filename}")
 
 if __name__ == "__main__":
-    device = "cuda" if torch.cuda.is_available() else "cpu"
     main()
+
