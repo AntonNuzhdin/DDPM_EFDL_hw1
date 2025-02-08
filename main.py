@@ -20,8 +20,9 @@ from modeling.unet import UnetModel
 from utils import set_random_seed
 
 
-@hydra.main(version_base=None, config_path="configs", config_name="train")
-def main(config):
+# @hydra.main(version_base=None, config_path="configs", config_name="config") # As I use hydra & DVC
+def main():
+    config = OmegaConf.load("params.yaml")
     set_random_seed()
     device = config.trainer.device
 
@@ -55,7 +56,7 @@ def main(config):
     dataset = CIFAR10(
         "cifar10",
         train=True,
-        download=True,
+        download=False,
         transform=train_transforms,
     )
     
@@ -78,7 +79,6 @@ def main(config):
     torch.save(ddpm.state_dict(), weights_filename)
     print(f"Model weights saved successfully to {weights_filename}")
 
-    writer.finish()
 
 if __name__ == "__main__":
     main()

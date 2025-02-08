@@ -1,0 +1,19 @@
+stages:
+  get_data:
+    cmd: python get_data.py
+    deps:
+      - get_data.py
+    outs:
+      - cifar10
+  train:
+    cmd: python main.py
+    deps:
+      - main.py
+      - modeling/diffusion.py
+      - modeling/training.py
+      - modeling/unet.py
+      - utils.py
+      - configs/config.yaml
+      - cifar10
+    outs:
+      - ddpm_weights.pth

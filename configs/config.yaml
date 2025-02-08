@@ -3,10 +3,10 @@ defaults:
   - dataloader: dataloader
   - model: ddpm
   - model@unet: unet
-  - optimizer: adam  # you can choose "sgd" or add your custom one 
+  - optimizer: sgd  # you can choose "sgd" or add your custom one 
   - _self_
 trainer:
   device: "cuda"
-  n_epochs: 100
+  n_epochs: 5
 augmentation:
   random_flip: true

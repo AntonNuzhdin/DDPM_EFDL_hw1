@@ -1,5 +1,5 @@
 _target_: logger.WandbWriter
 project_name: "EFDL_DDPM_HW1"
-run_name: "train_full"
+run_name: "train_full_#4_change_optimizer"
 mode: "online"
 
