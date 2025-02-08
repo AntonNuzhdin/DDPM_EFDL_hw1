@@ -1,3 +1,34 @@
+Bugs in the original code:
+
+1. diffusion.py
+   These bugs were found during the running tests (some bugs were obvious after running them) and reviewing the original code. I read the code of the original paper and checked the formulas with the code.
+- in forward: move timestep to device; incorrect formula for x_t (should be sqrt_one_minus_alpha_prod in original VP-SDE process); eps should be sampled from N(0,I) -> torch.randn_like
+- in sample: move x_i and z to device
+- in get_schedules: assert 0 < beta1 < beta2 < 1.0, betas should be positive numbers
+
+2. unet.py
+- in forward: the temb should be expanded with two fictitious dimentions to enable broadcasting. This was found during runing initial tests
+
+Other modifications: 
+- add ```test_training``` in ```tests/test_pipeline``` using pytest. The test covers the whole training process.
+Testing coverage:
+----------- coverage: platform darwin, python 3.12.4-final-0 -----------
+Name                                        Stmts   Miss  Cover
+-----------------------------------------------------------------
+modeling/__init__.py                            0      0    100%
+modeling/diffusion.py                          34      0    100%
+modeling/training.py                           30      0    100%
+modeling/unet.py                               68      0    100%
+-----------------------------------------------------------------
+TOTAL                                        132      0    100%
+
+- add hydra configuration and reformat the main.py for convenient usage with hydra
+- add logger/writer.py with convenient wandb class for logging of the experiments
+- integrated the DVC and configure it with hydra 
+
+  
+
+
 # Week 2 home assignment
 
 This assignment consists of 4 parts: you can earn the full amount of points by completing the first two and either of 
