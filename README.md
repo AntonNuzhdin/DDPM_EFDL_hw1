@@ -1,3 +1,5 @@
+# Week 2 home assignment
+
 See the WandB logs here: [link](https://wandb.ai/anthonnuzhdin/EFDL_DDPM_HW1)
 
 Bugs in the original code:
@@ -33,10 +35,12 @@ coverage: platform darwin, python 3.12.4-final-0
 ---
 
 - Added Hydra configuration and reformatted `main.py` for convenient usage with Hydra.  
-- Added `logger/writer.py` with a convenient `wandb` class for logging experiments. Add an ability to log images and other useful info. 
+- Added `logger/writer.py` with a convenient `wandb` class for logging experiments. Add an ability to log images and other useful info.
+- Added the logging logic to main.py to log all hyperparameters and metrics to wandb.
+- Change the train_epoch, generate_samples functions returns to match the logging logic.
 - Integrated DVC and configured it with Hydra.
-- Added .toml project file with all requirements and uv.lock with all dependencies
-- Added the setting of the seed before training ensuring the reproducibility of the experiments 
+- Added .toml project file with all requirements and uv.lock with all dependencies.
+- Added the setting of the seed before training ensuring the reproducibility of the experiments.
 
 # Install 
 1. Install the uv package manager
@@ -50,7 +54,6 @@ coverage: platform darwin, python 3.12.4-final-0
   
 
 
-# Week 2 home assignment
 
 This assignment consists of 4 parts: you can earn the full amount of points by completing the first two and either of 
 tasks 3 and 4 (or both of them for bonus points).
@@ -136,6 +139,5 @@ on integrating Hydra with DVC experiment management.
 When submitting this assignment, you should attach a .zip archive that contains:
 - The source code with all your fixes and improvements
 - A Markdown/PDF report in the root of the project folder that:
-  4. Gives a link to the Weights and Biases project with all necessary logs for tasks 2 and 3
 - If you solved Tasks 3 or 4, please ensure that the archived project contains the corresponding configuration/lock files as well.
 - An updated `requirements.txt` file, if your solution requires new dependencies such as `wandb`, `hydra-core` or `dvc`.
