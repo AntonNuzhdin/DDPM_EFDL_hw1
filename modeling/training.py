@@ -3,7 +3,6 @@ from torch.optim.optimizer import Optimizer
 from torch.utils.data import DataLoader
 from torchvision.utils import make_grid, save_image
 from tqdm import tqdm
-import wandb
 
 from modeling.diffusion import DiffusionModel
 
@@ -22,7 +21,6 @@ def train_epoch(model: DiffusionModel, dataloader: DataLoader, optimizer: Optimi
     pbar = tqdm(dataloader)
     loss_ema = None
     first_batch = None
-    losses = []
     for x, _ in pbar:
         if first_batch is None:
             first_batch = x
