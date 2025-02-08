@@ -102,4 +102,3 @@ uv run dvc exp run
 ```
 ---
 
-🔥 Now you're ready to train and experiment! 🚀  
