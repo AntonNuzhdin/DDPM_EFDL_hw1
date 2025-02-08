@@ -11,7 +11,12 @@ Bugs in the original code:
 
 Other modifications: 
 - add ```test_training``` in ```tests/test_pipeline``` using pytest. The test covers the whole training process.
-Testing coverage:
+### Testing Coverage:
+
+```
+coverage: platform darwin, python 3.12.4-final-0
+```
+
 | Name                      | Stmts | Miss | Cover |
 |---------------------------|-------|------|-------|
 | modeling/__init__.py      | 0     | 0    | 100%  |
@@ -20,10 +25,11 @@ Testing coverage:
 | modeling/unet.py          | 68    | 0    | 100%  |
 | **TOTAL**                 | 132   | 0    | 100%  |
 
-- add hydra configuration and reformat the main.py for convenient usage with hydra
-- add logger/writer.py with convenient wandb class for logging of the experiments
-- integrated the DVC and configure it with hydra 
+---
 
+- Added Hydra configuration and reformatted `main.py` for convenient usage with Hydra.  
+- Added `logger/writer.py` with a convenient `wandb` class for logging experiments.  
+- Integrated DVC and configured it with Hydra.  
   
 
 
