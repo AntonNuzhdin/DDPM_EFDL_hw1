@@ -29,7 +29,18 @@ coverage: platform darwin, python 3.12.4-final-0
 
 - Added Hydra configuration and reformatted `main.py` for convenient usage with Hydra.  
 - Added `logger/writer.py` with a convenient `wandb` class for logging experiments.  
-- Integrated DVC and configured it with Hydra.  
+- Integrated DVC and configured it with Hydra.
+- Added .toml project file with all requirements and uv.lock with all dependencies
+
+# Install 
+1. Install the uv package manager
+   `pip install uv`
+2. `uv pip install -r pyproject.toml`
+3. Configurate the DVC to enable hydra integration: `dvc config hydra.enabled True`
+4. You can manage the hyperparameters of the model and of the training process in the `configs` folder.
+   To run the default training pipeline, you can use the DVC: `uv run dvc exp run`
+
+
   
 
 
@@ -119,8 +130,6 @@ on integrating Hydra with DVC experiment management.
 When submitting this assignment, you should attach a .zip archive that contains:
 - The source code with all your fixes and improvements
 - A Markdown/PDF report in the root of the project folder that:
-  1. Details the changes you made to the original code (we will run `diff` and see if everything is explained)
-  2. Tells how to run the modified code (i.e., which command line arguments you have added and how to use them)
   3. Describes your process of fixing and adding new tests for Task 1 and reports the test coverage
   4. Gives a link to the Weights and Biases project with all necessary logs for tasks 2 and 3
 - If you solved Tasks 3 or 4, please ensure that the archived project contains the corresponding configuration/lock files as well.
