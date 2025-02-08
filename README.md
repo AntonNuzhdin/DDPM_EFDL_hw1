@@ -17,7 +17,6 @@ Bugs in the original code:
 - add the fixed seed during tests running ensuring the reproducibility of the results 
 
 Other modifications: 
-- add ```test_training``` in ```tests/test_pipeline``` using pytest. The test covers the whole training process.
 ### Testing Coverage:
 
 ```
@@ -33,7 +32,7 @@ coverage: platform darwin, python 3.12.4-final-0
 | **TOTAL**                 | 132   | 0    | 100%  |
 
 ---
-
+- Added ```test_training``` in ```tests/test_pipeline``` using pytest. The test covers the whole training process.
 - Added Hydra configuration and reformatted `main.py` for convenient usage with Hydra.  
 - Added `logger/writer.py` with a convenient `wandb` class for logging experiments. Add an ability to log images and other useful info.
 - Added the logging logic to main.py to log all hyperparameters and metrics to wandb.
